@@ -1,0 +1,65 @@
+<!-- Loading overlay section starts -->
+<div *ngIf="overlayDisplay" class="overlay">
+    <h1>Loading</h1>
+</div>
+<!-- Loading overlay section starts -->
+
+<!-- header section starts -->
+<header class="app-header">
+    <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="#">Hello {{username}}</a>
+    </nav>
+</header>
+<!-- header section ends -->
+
+<main role="main" class="container content" *ngIf="!overlayDisplay">
+    <div class="row chat-content">
+        <div class="col-3 chat-list-container">
+            <ul class="user-list">
+                <li *ngFor="let user of chatListUsers" (click)="selectedUser(user)"
+                    [class.active]="isUserSelected(user.id)">
+                    {{ user.username}}
+                    <span [ngClass]="user.online === 'Y' ? 'online' : 'offline'"> </span>
+                </li>
+            </ul>
+            <div class="alert" alert-info.class="!loading" *ngIf='chatListUsers.length === 0'>
+                {{ loading && chatListUsers.length === 0 ? 'Loading your chat list.' : 'No User Avilable to chat.'}}
+            </div>
+
+        </div>
+        <div class="col-8 message-container">
+            <div *ngIf='messageLoading' class="message-overlay">
+                <h3> {{selectedUser !== null && selectedUser.username ? 'Loading Messages' : ' Select a User to chat.'
+                    }}</h3>
+            </div>
+            <div class="massege-wrapper" *ngIf='!messageLoading'>
+                <div class="massege-container">
+                    <div class="opposite-user" *ngIf="selectedUser !== null && selectedUser.username">
+                        Chatting with {{selectedUser.username}}
+                    </div>
+
+                    <ul #messageThread class="message-thread" *ngIf="messages.length !== 0">
+                        <li *ngFor="let message of messages" [class.align-right]="alignMessage(message.toUserId)">
+                            {{ message.message}}
+                        </li>
+                    </ul>
+
+                    <div class="message-thread start-chatting-banner" *ngIf="messages.length === 0">
+                        <p class="heading">
+                            You haven't chatted with {{selectedUser.username}} in a while,
+                            <span class="sub-heading">Say Hi.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="message-typer">
+                    <form [formGroup]="messageForm" novalidate>
+                        <textarea class="message form-control" placeholder="Type and hit Enter"
+                            (keyup)="sendMessage($event)" formControlName="message">
+                        </textarea>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
